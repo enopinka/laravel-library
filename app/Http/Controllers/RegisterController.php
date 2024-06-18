@@ -26,7 +26,6 @@ class RegisterController extends Controller
             'role' =>"member"
         ]);
 
-        return back()->withErrors(['email' => 'gtw']);
     }
 
 

@@ -10,15 +10,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 // role admin
-Route::get('/admin', function () {
-    return view('admin.dashboard-admin');
-});
-
 Route::get('/admin/add-items', [BookController::class, 'index']);
 
 Route::post('/admin/add-items', [BookController::class, 'addBook'])->name('addBook');
 
-Route::get('/admin/manage-book', [BookController::class, 'showBook'])->name('manageBooks');
+Route::get('/admin/manage-book', [BookController::class, 'showBookAdmin']);
 
 Route::get('/admin/manage-book/edit/{id}', [BookController::class, 'showEditForm']);
 
@@ -35,19 +31,13 @@ Route::get('/register', [RegisterController::class, "index"]);
 
 Route::post('/register', [RegisterController::class, "store"]);
 
-Route::get('/login', [LoginController::class, 'index']);
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+
 
 Route::get('/logout', [LoginController::class, 'logout']);
 
 Route::post('/login', [LoginController::class, 'authenticate']);
 
-// Route::get('/', function () {
-//     if (Auth::check() && Gate::allows('access-home')) {
-//         return redirect()->route('dashboard');
-//     } else {
-//         return redirect()->route('login');
-//     }
-// });
 
 Route::get('/', [BookController::class, 'showBook']);
 
@@ -58,3 +48,9 @@ Route::post('/borrow/{id}', [BorrowController::class, 'borrowBook']);
 Route::get('/borrowed-books', [BorrowController::class, 'borrowedBook']);
 
 Route::get('/return-book/{id}', [BorrowController::class, 'returnBook']);
+
+Route::get('/admin', function () {
+    return view('admin.dashboard-admin');
+})->middleware(['auth']);
+
+Route::get('/', [BookController::class, 'showBook'])->middleware(['auth']);

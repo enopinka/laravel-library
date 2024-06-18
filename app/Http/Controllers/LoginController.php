@@ -11,14 +11,24 @@ class LoginController extends Controller
         return view("login");
     }
     public function authenticate(Request $request){
-       $cretidentials = $request->validate([
-        'email' => 'required|email:dns',
-        'password'=> 'required'
-    ]);
+        $credentials = $request->validate([
+            'email' => 'required|email:dns',
+            'password' => 'required'
+        ]);
 
-    if(Auth::attempt($cretidentials)){
-        $request->session()->regenerate();
-        return redirect()->intended('/');
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $user = Auth::user();
+
+            // Periksa role pengguna dan arahkan ke halaman yang sesuai
+            if ($user->role === 'admin') {
+                return redirect()->intended('/admin');
+            } elseif ($user->role === 'member') {
+                return redirect()->intended('/');
+            } else {
+                // Arahkan ke halaman default jika role tidak dikenali
+                return redirect()->intended('/');
+            }
     }
         
     }

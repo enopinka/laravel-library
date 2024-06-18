@@ -3,7 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -20,10 +21,14 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->register();
+        $this->registerPolicies();
 
-    Gate::define('access-home', function ($user) {
-        return $user !== null; // Jika pengguna terautentikasi, mereka memiliki akses ke home
+    Gate::define('isAdmin', function ($user) {
+        return $user->role === 'admin';
+    });
+
+    Gate::define('isMember', function ($user) {
+        return $user->role === 'member';
     });
     }
 }
